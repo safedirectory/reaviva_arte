@@ -22,5 +22,47 @@ const qs=[
 ['Se pudesse voltar por alguns segundos para aquele momento, o que gostaria de sentir?',['A presença de alguém novamente','A alegria daquele dia','A sensação de estar com a família','Aquele sentimento que a foto traz'],[3,3,3,3]],
 ['Por que essa fotografia merece ser guardada?',['Porque alguém importante está nela','Porque conta uma parte da minha história','Porque me lembra de pessoas que amo','Porque não quero que essa memória se perca'],[3,3,3,3]],
 ['Se essa lembrança pudesse voltar a ocupar um lugar especial na sua vida, você gostaria de revivê-la?',['Sim, com certeza','Sim, seria muito especial','Gostaria de tentar','Só quero preservar essa memória'],[3,3,3,3]]];
-let i=0,total=0;const $=id=>document.getElementById(id);function render(){ $('qnum').textContent=`Pergunta ${i+1} de ${qs.length}`;$('question').textContent=qs[i][0];$('bar').style.width=((i+1)/qs.length*100)+'%';$('options').innerHTML='';qs[i][1].forEach((x,j)=>{let b=document.createElement('button');b.className='option';b.textContent=x;b.onclick=()=>{total+=qs[i][2][j];i++;if(i<qs.length)render();else finish()};$('options').appendChild(b)})}function finish(){let pct=Math.round(total/15*100);$('quizbox').classList.add('hidden');$('result').classList.remove('hidden');$('result').innerHTML=`<div class="qnum">Uma lembrança como essa merece cuidado</div><div class="score">♥</div><h2>Talvez você não queira restaurar apenas uma foto.</h2><p>Talvez queira trazer de volta um sorriso, um rosto querido, um dia especial ou simplesmente aquela sensação boa que ficou guardada no tempo.</p><a class="cta" href="https://wa.me/5531992755009?text=Ol%C3%A1!%20Fiz%20o%20quiz%20e%20tenho%20uma%20mem%C3%B3ria%20que%20gostaria%20de%20trazer%20de%20volta.%20Quero%20conversar%20sobre%20a%20restaura%C3%A7%C3%A3o%20da%20minha%20foto." target="_blank" rel="noopener">Quero cuidar dessa memória</a>`}render();
+let i=0,total=0;
+  const respostas=[];
+  const $=id=>document.getElementById(id);
+
+  function render(){
+    $('qnum').textContent=`Pergunta ${i+1} de ${qs.length}`;
+    $('question').textContent=qs[i][0];
+    $('bar').style.width=((i+1)/qs.length*100)+'%';
+    $('options').innerHTML='';
+
+    qs[i][1].forEach((x,j)=>{
+      const b=document.createElement('button');
+      b.className='option';
+      b.textContent=x;
+      b.onclick=()=>{
+        respostas.push({pergunta:qs[i][0],resposta:x});
+        total+=qs[i][2][j];
+        i++;
+        if(i<qs.length) render(); else finish();
+      };
+      $('options').appendChild(b);
+    });
+  }
+
+  function finish(){
+    const linhas=respostas.map((item,index)=>
+      `${index+1}. ${item.pergunta}
+Resposta: ${item.resposta}`
+    ).join('\n\n');
+
+    const mensagem=`Olá! Fiz o quiz e gostaria de conversar sobre a restauração da minha foto.
+
+Minhas respostas:
+
+${linhas}`;
+    const whatsappUrl=`https://wa.me/5531992755009?text=${encodeURIComponent(mensagem)}`;
+
+    $('quizbox').classList.add('hidden');
+    $('result').classList.remove('hidden');
+    $('result').innerHTML=`<div class="qnum">Uma lembrança como essa merece cuidado</div><div class="score">♥</div><h2>Talvez você não queira restaurar apenas uma foto.</h2><p>Talvez queira trazer de volta um sorriso, um rosto querido, um dia especial ou simplesmente aquela sensação boa que ficou guardada no tempo.</p><a class="cta" href="${whatsappUrl}" target="_blank" rel="noopener">Quero cuidar dessa memória</a>`;
+  }
+
+  render();
 </script></body></html>
